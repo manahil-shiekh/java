@@ -11,45 +11,50 @@ import java.util.List;
 @CrossOrigin("http://localhost:3000")
 public class UserController {
 
-     @Autowired
+    @Autowired
     private UserRepository userRepository;
 
-     @PostMapping("/user")
-    User newUser(@RequestBody User newUser){
-         return userRepository.save(newUser);
-     }
+    @PostMapping("/user")
+    public User newUser(@RequestBody User newUser) {
+        return userRepository.save(newUser);
+    }
 
-     @GetMapping("/users")
-    List<User> getAllUsers(){
-         return userRepository.findAll();
-     }
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
-     @GetMapping("/user/{id}")
-    User getUserById(@PathVariable long id){
-         return userRepository.findById(id)
-                 .orElseThrow(()->new UserNotFoundException(id));
-     }
+    @GetMapping("/user/{id}")
+    public User getUserById(@PathVariable long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+    }
 
-     @PutMapping("/user/{id}")
-    User updateUSer(@RequestBody User newUser, @PathVariable long id){
-         return userRepository.findById(id)
-                 .map(user -> {
-                     user.setUsername(newUser.getUsername());
-                     user.setName(newUser.getName());
-                     user.setEmail(newUser.getEmail());
-                     user.setPassword(newUser.getPassword());
-                     return userRepository.save(user);
+    @PutMapping("/user/{id}")
+    public User updateUser(@RequestBody User newUser, @PathVariable long id) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setUsername(newUser.getUsername());
+                    user.setName(newUser.getName());
+                    user.setEmail(newUser.getEmail());
+                    user.setPassword(newUser.getPassword());
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new UserNotFoundException(id));
+    }
 
-                 }).orElseThrow(()-> new UserNotFoundException(id));
-     }
-
-     @DeleteMapping("/user/{id}")
-    String deleteUser(@PathVariable long id){
-         if(!userRepository.existsById(id)){
-             throw new UserNotFoundException(id);
-         }
-         userRepository.deleteById(id);
-         return "User with id " +id + " has been deleted successfully";
-     }
-
+    @DeleteMapping("/user/{id}")
+    public String deleteUser(@PathVariable long id) {
+        System.out.println("Deleting user with ID: " + id);
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+        try {
+            userRepository.deleteById(id);
+            return "User with ID " + id + " has been deleted successfully.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete user with ID " + id);
+        }
+    }
 }
