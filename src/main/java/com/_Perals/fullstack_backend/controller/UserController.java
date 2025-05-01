@@ -4,6 +4,8 @@ import com._Perals.fullstack_backend.exception.UserNotFoundException;
 import com._Perals.fullstack_backend.model.User;
 import com._Perals.fullstack_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -15,9 +17,17 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/user")
-    public User newUser(@RequestBody User newUser) {
-        return userRepository.save(newUser);
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+        try {
+            userRepository.save(user);
+            return ResponseEntity.ok("User saved");
+        } catch (Exception e) {
+            e.printStackTrace();  // This will log the real error to the console
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("There was an error saving the user. Please try again.");
+        }
     }
+
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
@@ -38,6 +48,7 @@ public class UserController {
                     user.setName(newUser.getName());
                     user.setEmail(newUser.getEmail());
                     user.setPassword(newUser.getPassword());
+                    user.setPhone(newUser.getPhone());
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new UserNotFoundException(id));

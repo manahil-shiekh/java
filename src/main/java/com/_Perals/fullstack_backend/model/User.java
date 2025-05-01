@@ -1,5 +1,6 @@
 package com._Perals.fullstack_backend.model;
 
+
 import jakarta.persistence.*;
 
 @Entity
@@ -7,22 +8,16 @@ import jakarta.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Ensure correct auto-increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // This is crucial
     private Long id;
-
-    @Column(nullable = false)
     private String username;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false, unique = true) // Ensure emails are unique
     private String email;
-
-    @Column(nullable = false)
     private String password;
+    private Long phone;
 
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -32,7 +27,7 @@ public class User {
     }
 
     public String getUsername() {
-        return username != null ? username.trim() : null;
+        return username;
     }
 
     public void setUsername(String username) {
@@ -40,7 +35,7 @@ public class User {
     }
 
     public String getName() {
-        return name != null ? name.trim() : null;
+        return name;
     }
 
     public void setName(String name) {
@@ -48,7 +43,7 @@ public class User {
     }
 
     public String getEmail() {
-        return email != null ? email.trim() : null;
+        return email;
     }
 
     public void setEmail(String email) {
@@ -56,10 +51,18 @@ public class User {
     }
 
     public String getPassword() {
-        return password != null ? password.trim() : null;
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getPhone() {
+        return phone;
+    }
+
+    public void setPhone(Long phone) {
+        this.phone = phone;
     }
 }
